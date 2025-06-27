@@ -1,16 +1,16 @@
 import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Dimension
-import java.awt.FlowLayout
 import java.awt.Graphics
 import java.awt.Graphics2D
-import java.awt.Point
 import java.awt.RenderingHints
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
+import javax.swing.Box
 import javax.swing.JButton
 import javax.swing.JFrame
 import javax.swing.JPanel
+import javax.swing.JTextField
 import javax.swing.SwingUtilities
 import kotlin.system.exitProcess
 
@@ -28,13 +28,15 @@ fun main(){
     }
 }
 
-class PanelRound(var fondo : Color = Color(34, 40, 49),var arc:Int = 35 ):JPanel(){
+class PanelRound(var fondo : Color = Color(34, 40, 49),var arc:Int = 35 , var padding:Int = 20):JPanel(){
 
     init {
         background= Color(0,0,0,0)
         isOpaque=false
         layout= BorderLayout()
+        border = javax.swing.BorderFactory.createEmptyBorder(padding, padding, padding, padding)
         add(Nav(), BorderLayout.NORTH)
+        add(Input(), BorderLayout.SOUTH)
 
     }
     override fun paintComponent(g: Graphics?) {
@@ -46,20 +48,50 @@ class PanelRound(var fondo : Color = Color(34, 40, 49),var arc:Int = 35 ):JPanel
     }
 }
 
-class Nav(var padding: Int = 20):JPanel(){
+class Input(var padding:Int=20): JTextField(){
 
     init {
-        background= Color(0,0,0,0)
-        isOpaque=false
-        location= Point(padding,padding)
-        preferredSize = Dimension(width-2*padding, 95)
-        maximumSize = Dimension(width-2*padding, 95)
+        foreground=Color(238, 238, 238)
+        preferredSize = Dimension(40, 40)
+        maximumSize = Dimension(40, 40)
+        minimumSize = Dimension(40, 40)
+        border = javax.swing.BorderFactory.createEmptyBorder(0, padding, 0, padding)
+        isOpaque = false
+    }
+
+    override fun paintComponent(g: Graphics?) {
+        (g!!.create() as Graphics2D).apply {
+            setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
+            color=Color(118, 171, 174)
+            fillRoundRect(0,0,width,height,35,35)
+        }
+        super.paintComponent(g)
 
     }
 
+}
+
+class Nav(var padding: Int = 20):JPanel(){
+
     init {
-        layout= FlowLayout(FlowLayout.RIGHT)
-        add(Cerrar("X"))
+        isOpaque=false
+        preferredSize = Dimension(width, 40)
+        maximumSize = Dimension(width, 40)
+        layout = BorderLayout()
+        border = javax.swing.BorderFactory.createEmptyBorder(0, padding, 0, padding)
+        add(Box.createVerticalBox().apply {
+            add(Box.createVerticalGlue())
+            add(Cerrar("X"))
+            add(Box.createVerticalGlue())
+        }, BorderLayout.EAST)
+    }
+
+    override fun paintComponent(g: Graphics?) {
+        (g!!.create() as Graphics2D).apply {
+            color=Color(0,0,0,0)
+            fillRoundRect(0,0,width,height,35,35)
+            dispose()
+        }
     }
 }
 
@@ -67,6 +99,8 @@ class Cerrar(var texto: String = "", var fondo: Color = Color(49, 54, 63)) : JBu
 
     init {
         preferredSize = Dimension(40, 40)
+        maximumSize = Dimension(40, 40)
+        minimumSize = Dimension(40, 40)
         isFocusPainted = false
         isBorderPainted = false
         border = null
